@@ -1,5 +1,9 @@
 Revision history for Perl extension Net::Jabber::Loudmouth.
 
+0.02  Thu Jul 28 18:13:22 2005
+	- Added documentation
+	- Removed xs/ppport.h
+
 0.01  Sat Jul 23 02:51:26 2005
 	- original version; created by h2xs 1.23 with options
 		-AO -n Net::Jabber::Loudmouth

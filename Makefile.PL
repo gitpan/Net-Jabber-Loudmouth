@@ -60,6 +60,10 @@ WriteMakefile(
     NAME				=> 'Net::Jabber::Loudmouth',
     VERSION_FROM		=> File::Spec->catfile('pm', 'Loudmouth.pm'),
 	XSPROTOARG			=> '-noprototypes',
+	MAN3PODS			=> {
+		'pm/Loudmouth.pm'	=> '$(INST_MAN3DIR)/Net::Jabber::Loudmouth.$(MAN3EXT)',
+		Glib::MakeHelper->do_pod_files(@xs_files)
+	},
 	$loudmouth->get_makefile_vars()
 );
 
