@@ -1,4 +1,3 @@
-t/Net-Jabber-Loudmouth.t
 Changes
 examples/lm-change-password.pl
 examples/lm-register.pl
@@ -7,6 +6,16 @@ examples/lm-send-sync.pl
 examples/lm-test-http-proxy.pl
 examples/lm-test-tunnel.pl
 examples/lm-test.pl
+t/01_use.t
+t/02_pod.t
+t/03_pod_coverage.t
+t/04_basic.t
+t/05_connection.t
+t/05_message.t
+t/07_message_handler.t
+t/08_message_node.t
+t/server_helper.pl
+TODO
 xs/Connection.xs
 xs/MessageHandler.xs
 xs/MessageNode.xs

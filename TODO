@@ -1,0 +1,2 @@
+* More tests for Net::Jabber::Loudmouth::MessageNode.
+* Untodo tests which are commented out because of loudmouth bugs as soon as they are fixed.

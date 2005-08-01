@@ -19,6 +19,13 @@ get_name(node)
 	OUTPUT:
 		RETVAL
 
+void
+set_name(node, name)
+		LmMessageNode* node
+		gchar* name
+	CODE:
+		node->name = name;
+
 LmMessageNode*
 lm_message_node_add_child(node, name, value=NULL)
 		LmMessageNode* node

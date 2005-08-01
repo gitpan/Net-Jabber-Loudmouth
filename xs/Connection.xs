@@ -165,7 +165,7 @@ lm_connection_get_ssl(connection)
 void
 lm_connection_set_ssl(connection, ssl)
 		LmConnection* connection
-		LmSSL* ssl
+		LmSSL_ornull* ssl
 
 LmProxy*
 lm_connection_get_proxy(connection)
@@ -174,7 +174,7 @@ lm_connection_get_proxy(connection)
 void
 lm_connection_set_proxy(connection, proxy)
 		LmConnection* connection
-		LmProxy* proxy
+		LmProxy_ornull* proxy
 
 gboolean
 lm_connection_send(connection, message)
