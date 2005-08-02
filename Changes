@@ -1,5 +1,12 @@
 Revision history for Perl extension Net::Jabber::Loudmouth.
 
+0.04  Tue Aug  2 23:10:14 2005
+	- Changed Net::Jabber::Loudmouth::Connection::register_message_handler() to
+	  accept Net::Jabber::Loudmouth::MessageHandler instances and regular code
+	  references. We now return a Net::Jabber::Loudmouth::MessageHandler object
+	  instead of nothing to be able to remove the handler afterwards easily
+	- Removed unneeded type for T_STRUCT_TM from typemap
+
 0.03  Mon Aug  1 22:06:48 2005
 	- Added lots of tests
 

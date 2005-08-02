@@ -1,5 +1,5 @@
 use strict;
-use Test::More tests => 46;
+use Test::More tests => 51;
 use Test::Exception;
 use Glib;
 use Net::Jabber::Loudmouth;
@@ -103,8 +103,24 @@ $c->set_keep_alive_rate(20);
 
 my $handler = Net::Jabber::Loudmouth::MessageHandler->new(sub {});
 isa_ok($handler, "Net::Jabber::Loudmouth::MessageHandler");
-$c->register_message_handler($handler, 'message', 'normal');
-$c->unregister_message_handler($handler, 'message');
+
+my $retval = $c->register_message_handler('message', 'normal', $handler);
+isa_ok($retval, "Net::Jabber::Loudmouth::MessageHandler");
+
+$c->unregister_message_handler('message', $handler);
+
+$retval = $c->register_message_handler('message', 'normal', sub {});
+isa_ok($retval, "Net::Jabber::Loudmouth::MessageHandler");
+
+$c->unregister_message_handler('message', $retval);
+
+$retval = $c->register_message_handler('message', 'normal', sub {}, 1);
+isa_ok($retval, "Net::Jabber::Loudmouth::MessageHandler");
+
+$c->unregister_message_handler('message', $retval);
+
+dies_ok {$c->register_message_handler('message', 'normal', $handler, 1)};
+dies_ok {$c->register_message_handler('message', 'normal', 1)};
 
 ok($c->send($m));
 ok($c->send_raw($m->get_node->to_string()));

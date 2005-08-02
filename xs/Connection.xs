@@ -2,6 +2,8 @@
 
 /* extern void connection_free (LmConnection *connection); */
 
+extern LmHandlerResult perlmouth_lm_message_handler_new_cb(LmMessageHandler* handler, LmConnection* connection, LmMessage* message, gpointer user_data);
+
 void
 perlmouth_lm_connection_open_cb(LmConnection* connection, gboolean success, gpointer callback) {
 	gperl_callback_invoke((GPerlCallback*)callback, NULL, connection, success);
@@ -16,6 +18,20 @@ void
 perlmouth_lm_connection_set_disconnect_function_cb(LmConnection* connection, LmDisconnectReason reason, gpointer callback) {
 	gperl_callback_invoke((GPerlCallback*)callback, NULL, connection, reason);
 }
+
+
+/*
+LmHandlerResult
+perlmouth_lm_message_handler_new_cb(LmMessageHandler* handler, LmConnection* connection, LmMessage* message, gpointer callback) {
+	GValue return_value = {0,};
+	LmHandlerResult retval;
+	g_value_init(&return_value, ((GPerlCallback*)callback)->return_type);
+	gperl_callback_invoke((GPerlCallback*)callback, &return_value, handler, connection, message);
+	retval = g_value_get_enum(&return_value);
+	g_value_unset(&return_value);
+	return retval;
+}
+*/
 
 MODULE = Net::Jabber::Loudmouth::Connection		PACKAGE = Net::Jabber::Loudmouth::Connection	PREFIX = lm_connection_
 
@@ -229,18 +245,44 @@ lm_connection_send_raw(connection, str)
 	OUTPUT:
 		RETVAL
 
-void
-lm_connection_register_message_handler(connection, handler, type, priority)
+LmMessageHandler*
+lm_connection_register_message_handler(connection, type, priority, handler_cb, user_data=NULL)
 		LmConnection* connection
-		LmMessageHandler* handler
 		LmMessageType type
 		LmHandlerPriority priority
+		SV* handler_cb
+		SV* user_data
+	PREINIT:
+		GType param_types[3];
+		GPerlCallback* callback;
+	CODE:
+		param_types[0] = PERLMOUTH_TYPE_MESSAGE_HANDLER;
+		param_types[1] = PERLMOUTH_TYPE_CONNECTION;
+		param_types[2] = PERLMOUTH_TYPE_MESSAGE;
+
+		if (!handler_cb || !SvOK(handler_cb) || !SvROK(handler_cb)) {
+			croak("handler_cb must be either a code reference or derived from Net::Jabber::Loudmouth::MessageHandler");
+		} else if (sv_isobject(handler_cb) && sv_derived_from(handler_cb, "Net::Jabber::Loudmouth::MessageHandler")) {
+			if (user_data != NULL)
+				croak("You can't use user_data if you pass a Net::Jabber::Loudmouth::MessageHandler derived object as handler_cb");
+			RETVAL = SvLmMessageHandler(handler_cb);
+		} else if (SvTYPE(SvRV(handler_cb)) == SVt_PVCV) {
+			callback = gperl_callback_new(handler_cb, user_data, 3, param_types, PERLMOUTH_TYPE_HANDLER_RESULT);
+			RETVAL = lm_message_handler_new(perlmouth_lm_message_handler_new_cb, callback, (GDestroyNotify)gperl_callback_destroy);
+		} else {
+			croak("your handler_cb ist weird. This shouldn't happen. Please report a bug.");
+		}
+		lm_connection_register_message_handler(connection, RETVAL, type, priority);
+	OUTPUT:
+		RETVAL
 
 void
-lm_connection_unregister_message_handler(connection, handler, type)
+lm_connection_unregister_message_handler(connection, type, handler)
 		LmConnection* connection
-		LmMessageHandler* handler
 		LmMessageType type
+		LmMessageHandler* handler
+	C_ARGS:
+		connection, handler, type
 
 void
 lm_connection_set_disconnect_function(connection, disconnect_cb, user_data=NULL)

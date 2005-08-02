@@ -1,22 +1,8 @@
 TYPEMAP
 
 const unsigned char*	T_UNSIGNED_PV
-struct tm*	T_STRUCT_TM
 
 OUTPUT
 
 T_UNSIGNED_PV
 	sv_setpv((SV*)$arg, (const char*)$var);
-
-T_STRUCT_TM
-	$arg = newAV();
-	av_extend($arg, 8);
-	av_store($arg, 0, newSViv($var->tm_sec));
-	av_store($arg, 1, newSViv($var->tm_min));
-	av_store($arg, 2, newSViv($var->tm_hour));
-	av_store($arg, 3, newSViv($var->tm_mday));
-	av_store($arg, 4, newSViv($var->tm_mon));
-	av_store($arg, 5, newSViv($var->tm_year));
-	av_store($arg, 6, newSViv($var->tm_wday));
-	av_store($arg, 7, newSViv($var->tm_yday));
-	av_store($arg, 8, newSViv($var->tm_isdst));

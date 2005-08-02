@@ -11,7 +11,7 @@ t/02_pod.t
 t/03_pod_coverage.t
 t/04_basic.t
 t/05_connection.t
-t/05_message.t
+t/06_message.t
 t/07_message_handler.t
 t/08_message_node.t
 t/server_helper.pl
