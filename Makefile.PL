@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use File::Spec;
-use Gtk2::CodeGen;
+use Glib::CodeGen;
 use Glib::MakeHelper;
 use ExtUtils::Depends;
 use ExtUtils::PkgConfig;
@@ -38,8 +38,8 @@ system(q(glib-mkenums --fhead "#include <loudmouth/loudmouth.h>\n" ).
 					q(--vtail "	return t;\n}\n\n" ).
 					"@lm_headers > build/perlmouth-gtypes.c");
 
-Gtk2::CodeGen->parse_maps('loudmouth');
-Gtk2::CodeGen->write_boot(ignore => qr/^Net::Jabber::Loudmouth$/);
+Glib::CodeGen->parse_maps('loudmouth');
+Glib::CodeGen->write_boot(ignore => qr/^Net::Jabber::Loudmouth$/);
 
 our $loudmouth = ExtUtils::Depends->new('Net::Jabber::Loudmouth', 'Glib');
 our @xs_files = <xs/*.xs>;
@@ -60,6 +60,9 @@ WriteMakefile(
     NAME				=> 'Net::Jabber::Loudmouth',
     VERSION_FROM		=> File::Spec->catfile('pm', 'Loudmouth.pm'),
 	XSPROTOARG			=> '-noprototypes',
+	PREREQ_PM			=> {
+		'Glib'	=> '1.093'
+	},
 	MAN3PODS			=> {
 		'pm/Loudmouth.pm'	=> '$(INST_MAN3DIR)/Net::Jabber::Loudmouth.$(MAN3EXT)',
 		Glib::MakeHelper->do_pod_files(@xs_files)

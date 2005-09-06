@@ -6,15 +6,12 @@ examples/lm-send-sync.pl
 examples/lm-test-http-proxy.pl
 examples/lm-test-tunnel.pl
 examples/lm-test.pl
-Loudmouth.bs
 Makefile.PL
 MANIFEST
 maps
 META.yml
-Net-Jabber-Loudmouth-0.05.tar.gz
 perlmouth.c
 perlmouth.h
-perlmouth.o
 pm/Loudmouth.pm
 t/01_use.t
 t/02_pod.t
