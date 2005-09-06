@@ -1,8 +1,0 @@
-TYPEMAP
-
-const unsigned char*	T_UNSIGNED_PV
-
-OUTPUT
-
-T_UNSIGNED_PV
-	sv_setpv((SV*)$arg, (const char*)$var);

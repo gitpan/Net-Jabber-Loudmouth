@@ -1,5 +1,9 @@
 Revision history for Perl extension Net::Jabber::Loudmouth.
 
+0.05  Tue Aug 16 12:57:07 2005
+	- Updated MANIFEST
+	- UNTODO some tests. They work with loudmouth 1.0 now.
+
 0.04  Tue Aug  2 23:10:14 2005
 	- Changed Net::Jabber::Loudmouth::Connection::register_message_handler() to
 	  accept Net::Jabber::Loudmouth::MessageHandler instances and regular code

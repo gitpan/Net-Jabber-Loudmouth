@@ -14,6 +14,8 @@ mkdir 'build', 0777;
 chomp(my $pm_includes = `pkg-config --variable includedir loudmouth-1.0`);
 my @lm_headers = glob($pm_includes.'/loudmouth-1.0/loudmouth/*.h');
 
+my %pkg_config = ExtUtils::PkgConfig->find('loudmouth-1.0');
+
 system(q(glib-mkenums --fhead "#ifndef __PERLMOUTH_GTYPES_H__\n" ).
 					q(--fhead "#define __PERLMOUTH_GTYPES_H__ 1\n\n" ).
 					q(--fhead "#include <glib-object.h>\n\n" ).
@@ -36,8 +38,6 @@ system(q(glib-mkenums --fhead "#include <loudmouth/loudmouth.h>\n" ).
 					q(--vtail "	return t;\n}\n\n" ).
 					"@lm_headers > build/perlmouth-gtypes.c");
 
-my %pkg_config = ExtUtils::PkgConfig->find('loudmouth-1.0');
-
 Gtk2::CodeGen->parse_maps('loudmouth');
 Gtk2::CodeGen->write_boot(ignore => qr/^Net::Jabber::Loudmouth$/);
 
@@ -46,7 +46,7 @@ our @xs_files = <xs/*.xs>;
 
 $loudmouth->add_xs(@xs_files);
 $loudmouth->add_c('perlmouth.c', 'build/perlmouth-gtypes.c');
-$loudmouth->add_typemaps(File::Spec->rel2abs(File::Spec->catfile('build', 'loudmouth.typemap')), File::Spec->rel2abs('loudmouth.typemap'));
+$loudmouth->add_typemaps(File::Spec->rel2abs(File::Spec->catfile('build', 'loudmouth.typemap')));
 $loudmouth->set_inc($pkg_config{cflags}.' -I./build -Werror');
 $loudmouth->set_libs($pkg_config{libs});
 $loudmouth->install(File::Spec->catfile('build', 'loudmouth-autogen.h'));

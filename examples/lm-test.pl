@@ -11,7 +11,7 @@ if (@ARGV < 3) {
 
 my $connection = Net::Jabber::Loudmouth::Connection->new($ARGV[0]);
 
-if (@ARGV > 3 && Net::Jabber::Loudmouth::SSL->is_supported()) {
+if (@ARGV > 3 && !Net::Jabber::Loudmouth::SSL->is_supported()) {
 	print STDERR "No SSL support!\n";
 	exit 2;
 }
@@ -26,7 +26,7 @@ my $info = {
 
 if (@ARGV > 3) {
 	$connection->set_port($Net::Jabber::Loudmouth::DefaultPortSSL);
-	my $ssl = Net::Jabber::Loudmouth::SSL->new($ARGV[3], \&ssl_cb, $info);
+	my $ssl = Net::Jabber::Loudmouth::SSL->new(\&ssl_cb, $info, $ARGV[3]);
 	$connection->set_ssl($ssl);
 }
 
@@ -38,10 +38,20 @@ $main_loop->run();
 sub print_finger {
 	my ($fpr, $size) = @_;
 
-	for (my $i = 0; $i < $size; $i++) {
-		printf "%02X:", substr($fpr, $i, 1);
+	for (my $i = 0; $i < $size-1; $i++) {
+		my $c;
+		{ no warnings;
+			$c = substr($fpr, $i, 1); }
+		$c &&= ord $c;
+		$c ||= 0;
+		printf "%02X:", $c;
 	}
-	printf "%02X", substr($fpr, $size, 1);
+	my $c;
+	{ no warnings;
+		$c = substr($fpr, $size-1, 1); }
+	$c &&= ord $c;
+	$c ||= 0;
+	printf "%02X", $c;
 }
 
 sub ssl_cb {

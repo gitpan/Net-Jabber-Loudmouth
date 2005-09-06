@@ -19,20 +19,6 @@ perlmouth_lm_connection_set_disconnect_function_cb(LmConnection* connection, LmD
 	gperl_callback_invoke((GPerlCallback*)callback, NULL, connection, reason);
 }
 
-
-/*
-LmHandlerResult
-perlmouth_lm_message_handler_new_cb(LmMessageHandler* handler, LmConnection* connection, LmMessage* message, gpointer callback) {
-	GValue return_value = {0,};
-	LmHandlerResult retval;
-	g_value_init(&return_value, ((GPerlCallback*)callback)->return_type);
-	gperl_callback_invoke((GPerlCallback*)callback, &return_value, handler, connection, message);
-	retval = g_value_get_enum(&return_value);
-	g_value_unset(&return_value);
-	return retval;
-}
-*/
-
 MODULE = Net::Jabber::Loudmouth::Connection		PACKAGE = Net::Jabber::Loudmouth::Connection	PREFIX = lm_connection_
 
 LmConnection*
@@ -262,13 +248,13 @@ lm_connection_register_message_handler(connection, type, priority, handler_cb, u
 
 		if (!handler_cb || !SvOK(handler_cb) || !SvROK(handler_cb)) {
 			croak("handler_cb must be either a code reference or derived from Net::Jabber::Loudmouth::MessageHandler");
+		} else if (SvTYPE(SvRV(handler_cb)) == SVt_PVCV) {
+			callback = gperl_callback_new(handler_cb, user_data, 3, param_types, PERLMOUTH_TYPE_HANDLER_RESULT);
+			RETVAL = lm_message_handler_new(perlmouth_lm_message_handler_new_cb, callback, (GDestroyNotify)gperl_callback_destroy);
 		} else if (sv_isobject(handler_cb) && sv_derived_from(handler_cb, "Net::Jabber::Loudmouth::MessageHandler")) {
 			if (user_data != NULL)
 				croak("You can't use user_data if you pass a Net::Jabber::Loudmouth::MessageHandler derived object as handler_cb");
 			RETVAL = SvLmMessageHandler(handler_cb);
-		} else if (SvTYPE(SvRV(handler_cb)) == SVt_PVCV) {
-			callback = gperl_callback_new(handler_cb, user_data, 3, param_types, PERLMOUTH_TYPE_HANDLER_RESULT);
-			RETVAL = lm_message_handler_new(perlmouth_lm_message_handler_new_cb, callback, (GDestroyNotify)gperl_callback_destroy);
 		} else {
 			croak("your handler_cb ist weird. This shouldn't happen. Please report a bug.");
 		}

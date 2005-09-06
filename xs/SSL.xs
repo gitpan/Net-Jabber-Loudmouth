@@ -34,6 +34,6 @@ gboolean
 lm_ssl_is_supported(class)
 	C_ARGS:
 
-const unsigned char*
+const gchar*
 lm_ssl_get_fingerprint(ssl)
 		LmSSL* ssl
