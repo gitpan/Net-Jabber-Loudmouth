@@ -43,11 +43,12 @@ lm_message_node_set_attributes(node, ...)
 					"(odd number of arguments detected)");
 
 		for (i = 1; i < items; i += 2) {
+			const gchar *name, *value;
 			sv_utf8_upgrade(ST(i));
-			const gchar* name = (const gchar*)SvPV_nolen(ST(i));
+			name = (const gchar*)SvPV_nolen(ST(i));
 
 			sv_utf8_upgrade(ST(i+1));
-			const gchar* value = (const gchar*)SvPV_nolen(ST(i+1));
+			value = (const gchar*)SvPV_nolen(ST(i+1));
 
 			lm_message_node_set_attribute(node, name, value);
 		}

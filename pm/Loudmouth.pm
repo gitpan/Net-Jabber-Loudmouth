@@ -6,10 +6,13 @@ use Glib;
 require DynaLoader;
 
 our @ISA = qw(DynaLoader);
-our $VERSION = 0.06;
+our $VERSION = 0.07;
 
 our $DefaultPort = 5222;
 our $DefaultPortSSL = 5223;
+
+sub default_port { return $DefaultPort; }
+sub default_port_ssl { return $DefaultPortSSL; }
 
 sub dl_load_flags { 0x01 };
 
@@ -43,6 +46,28 @@ Net::Jabber::Loudmouth is a perl interface for libloudmouth, Lightweight C
 Jabber library. It allows you to do the same stuff with Net::Jabber, but with a
 nicer interface and much faster, because most of the code is written in C.
 
+=head1 FUNCTIONS
+
+B<Net::Jabber::Loudmouth> only contains two functions. Other functionality can
+be found in B<Net::Jabber::Loudmouth::*>.
+
+=head2 default_port
+
+  Net::Jabber::Loudmouth->default_port()
+
+Returns the default port which will be used for every connection.
+
+=head2 default_port_ssl
+
+  Net::Jabber::Loudmouth->default_port_ssl()
+
+Returns the default ssl port. Use
+
+  $connection->set_port(Net::Jabber::Loudmouth->default_port_ssl())
+
+to tell a connection to use the ssl port. See
+L<Net::Jabber::Loudmouth::Connection>.
+
 =head1 SEE ALSO
 
 Net::Jabber::Loudmouth::Connection, Net::Jabber::Loudmouth::Message,
@@ -51,7 +76,7 @@ Net::Jabber::Loudmouth::SSL, Net::Jabber::Loudmouth::Proxy
 
 =head1 AUTHOR
 
-Florian Ragwitz, E<lt>rafl@cpan.orgE<gt>
+Florian Ragwitz, E<lt>rafl@debian.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 

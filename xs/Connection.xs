@@ -1,7 +1,5 @@
 #include "perlmouth.h"
 
-/* extern void connection_free (LmConnection *connection); */
-
 extern LmHandlerResult perlmouth_lm_message_handler_new_cb(LmMessageHandler* handler, LmConnection* connection, LmMessage* message, gpointer user_data);
 
 void
@@ -40,7 +38,7 @@ lm_connection_open(connection, result_cb, user_data=NULL)
 		SV *result_cb
 		SV *user_data
 	PREINIT:
-		GError *error = NULL;
+		GError* error = NULL;
 		GType param_types[2];
 		GPerlCallback *callback;
 	CODE:
